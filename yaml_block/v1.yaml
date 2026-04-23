@@ -1,0 +1,74 @@
+system:
+  name: falcon_v1
+  mode: paper   # paper | live
+  log_level: info
+
+broker:
+  platform: mt5
+  symbol: XAUUSD
+  timeframe: M5
+  slippage: 20              # higher due to gold volatility
+  magic_number: 10001
+
+execution:
+  enable_trading: true
+  max_open_trades: 1        # reduce exposure (gold moves fast)
+  allow_long: true
+  allow_short: true
+
+strategy:
+  name: breakout
+  params:
+    lookback_period: 20
+    breakout_buffer: 0.2    # small buffer to avoid fake breakouts
+    use_volume_filter: false
+
+risk:
+  risk_per_trade: 0.005       # 0.5% (lower than forex)
+  max_daily_loss: 0.02        # tighter control
+  max_trades_per_day: 2
+  risk_reward_ratio: 2.0
+
+  stop_loss:
+    type: atr
+    atr_period: 14
+    atr_multiplier: 2.0      # wider SL for volatility
+    fixed_pips: 200
+
+  take_profit:
+    type: rr
+    fixed_pips: 400
+
+filters:
+  spread:
+    enabled: true
+    max_spread: 30           # gold spreads are larger
+
+  volatility:
+    enabled: false
+    min_atr: 1.0
+
+data:
+  candles: 100
+  source: mt5
+
+scheduler:
+  interval_seconds: 60
+  trading_hours:
+    enabled: false
+    start: "09:00"
+    end: "17:00"
+
+logging:
+  trades: true
+  errors: true
+  file: logs/trades.csv
+
+safety:
+  kill_switch:
+    enabled: true
+    max_drawdown: 0.04   # stricter than forex
+
+notifications:
+  enabled: false
+  telegram: false

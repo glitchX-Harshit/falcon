@@ -1,0 +1,64 @@
+system:
+  name: falcon_v2
+  mode: paper
+  log_level: info
+
+env:
+  source: dotenv   # dotenv | system
+  required:
+    - MT5_LOGIN
+    - MT5_PASSWORD
+    - MT5_SERVER
+
+broker:
+  platform: mt5
+  symbol: XAUUSD
+  timeframe: M5
+  slippage: 20
+  magic_number: 20001
+
+  credentials:
+    login: ${MT5_LOGIN}
+    password: ${MT5_PASSWORD}
+    server: ${MT5_SERVER}
+    path: ${MT5_PATH}
+
+execution:
+  enable_trading: true
+  max_open_trades: 1
+
+strategy:
+  name: breakout_v2
+  params:
+    lookback_period: 20
+    breakout_buffer: 0.2
+    confirmation_close: true
+
+    trend_filter:
+      enabled: true
+      type: ema
+      period: 50
+      mode: with_trend
+
+risk:
+  risk_per_trade: 0.005
+  max_daily_loss: 0.02
+  max_trades_per_day: 2
+  risk_reward_ratio: 2.0
+
+filters:
+  spread:
+    enabled: true
+    max_spread: 30
+
+scheduler:
+  interval_seconds: 60
+
+logging:
+  file: logs/trades.csv
+  level: info
+
+safety:
+  kill_switch:
+    enabled: true
+    max_drawdown: 0.04

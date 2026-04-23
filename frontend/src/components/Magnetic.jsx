@@ -9,7 +9,7 @@ export default function Magnetic({ children }) {
     if (!el) return;
     
     // Only apply on desktop
-    if(window.matchMedia("(pointer: coarse)").matches) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const xTo = gsap.quickTo(el, "x", { duration: 1, ease: "elastic.out(1, 0.3)" });
     const yTo = gsap.quickTo(el, "y", { duration: 1, ease: "elastic.out(1, 0.3)" });
@@ -19,8 +19,8 @@ export default function Magnetic({ children }) {
       const { top, left, width, height } = el.getBoundingClientRect();
       const x = clientX - (left + width / 2);
       const y = clientY - (top + height / 2);
-      xTo(x * 0.4); 
-      yTo(y * 0.4);
+      xTo(x * 0.35);
+      yTo(y * 0.35);
     };
 
     const mouseLeave = () => {
@@ -37,5 +37,9 @@ export default function Magnetic({ children }) {
     };
   }, []);
 
-  return React.cloneElement(children, { ref: magneticRef, className: `${children.props.className || ''} magnetic-wrap` });
+  return (
+    <div ref={magneticRef} className="magnetic-wrap" style={{ display: 'inline-block' }}>
+      {children}
+    </div>
+  );
 }

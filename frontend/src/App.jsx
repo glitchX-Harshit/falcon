@@ -1,38 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useState, createContext } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import TrustStrip from './components/TrustStrip';
-import Philosophy from './components/Philosophy';
-import CoreFeatures from './components/CoreFeatures';
-import ArchitectureFlow from './components/ArchitectureFlow';
-import Strategy from './components/Strategy';
-import Showcase from './components/Showcase';
-import Future from './components/Future';
-import CTA from './components/CTA';
-import Footer from './components/Footer';
+import LoadingScreen from './components/LoadingScreen';
+import HomePage from './pages/HomePage';
+import BlogPage from './pages/BlogPage';
+import BlogDetail from './pages/BlogDetail';
 
 import './App.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+export const LoadingContext = createContext(false);
+
 function App() {
+  const [loading, setLoading] = useState(true);
+
   return (
-    <div className="app-container">
-      <Navbar />
-      <Hero />
-      <TrustStrip />
-      <Philosophy />
-      <CoreFeatures />
-      <ArchitectureFlow />
-      <Strategy />
-      <Showcase />
-      <Future />
-      <CTA />
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <LoadingContext.Provider value={!loading}>
+        {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
+        {!loading && (
+          <div className="app-container">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:slug" element={<BlogDetail />} />
+            </Routes>
+          </div>
+        )}
+      </LoadingContext.Provider>
+    </BrowserRouter>
   );
 }
 
